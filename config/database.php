@@ -9,19 +9,34 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+// Configure the database.
+if (isset($_ENV['PLATFORM_RELATIONSHIPS'])) {
+    $dbRelationshipName = 'database';
+    $relationships = json_decode(base64_decode($_ENV['PLATFORM_RELATIONSHIPS']), true);
+    foreach ($relationships[$dbRelationshipName] as $endpoint) {
+        if (!empty($endpoint['query']['is_master'])) {
+            $hostname = $endpoint['host'];
+            $hostport = $endpoint['port'];
+            $username = $endpoint['username'];
+            $password = $endpoint['password'];
+            break;
+        }
+    }
+}
+
 return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => '127.0.0.1',
+    'hostname'        => $hostname,
     // 数据库名
     'database'        => '',
     // 用户名
-    'username'        => 'root',
+    'username'        => $username,
     // 密码
-    'password'        => '',
+    'password'        => $password,
     // 端口
-    'hostport'        => '',
+    'hostport'        => $hostport,
     // 连接dsn
     'dsn'             => '',
     // 数据库连接参数
